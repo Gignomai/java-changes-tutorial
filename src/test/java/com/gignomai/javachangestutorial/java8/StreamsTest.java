@@ -2,8 +2,10 @@ package com.gignomai.javachangestutorial.java8;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,9 +15,9 @@ class StreamsTest {
 
     @Test
     void shouldCreateStreamsFromCollection() {
-        String test = "Test";
+        final String test = "Test";
 
-        Stream<String> stream = Stream.of(test);
+        final Stream<String> stream = Stream.of(test);
 
         assertThat(stream).isNotNull();
         assertThat(stream).contains(test);
@@ -25,7 +27,7 @@ class StreamsTest {
     void shouldCreateCollectionFromStream() {
         final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
 
-        List<String> result = names.stream()
+        final List<String> result = names.stream()
                 .filter(name -> name.endsWith("ona"))
                 .collect(Collectors.toList());
 
@@ -37,7 +39,7 @@ class StreamsTest {
     void shouldFilterValuesFromCollection() {
         final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
 
-        List<String> result = names.stream()
+        final List<String> result = names.stream()
                 .filter(name -> name.startsWith("Bar"))
                 .collect(Collectors.toList());
 
@@ -48,7 +50,7 @@ class StreamsTest {
     void shouldMapValuesFromCollection() {
         final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
 
-        List<String> result = names.stream()
+        final List<String> result = names.stream()
                 .map(String::toUpperCase)
                 .collect(Collectors.toList());
 
@@ -60,7 +62,7 @@ class StreamsTest {
     void shouldFlatMapValuesFromCollection() {
         final List<List<String>> names = List.of(List.of("Barcelona", "Girona", "LLeida", "Tarragona"));
 
-        List<String> result = names.stream()
+        final List<String> result = names.stream()
                 .flatMap(List::stream)
                 .map(String::toUpperCase)
                 .collect(Collectors.toList());
@@ -73,16 +75,20 @@ class StreamsTest {
     void shouldConsumeValuesFromCollection() {
         final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
 
+        final List<String> result = new ArrayList<>();
+
         names.stream()
                 .filter(name -> name.endsWith("ona"))
-                .forEach(System.out::println);
+                .forEach(result::add);
+
+        assertThat(result).hasSize(3);
     }
 
     @Test
     void shouldReturnDistinctValuesFromCollection() {
         final List<String> names = List.of("Barcelona", "Barcelona", "Girona", "LLeida", "Tarragona");
 
-        List<String> result = names.stream()
+        final List<String> result = names.stream()
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -93,7 +99,7 @@ class StreamsTest {
     void shouldCountValuesFromCollection() {
         final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
 
-        long count = names.stream()
+        final long count = names.stream()
                 .filter(name -> name.endsWith("ona"))
                 .count();
 
@@ -104,7 +110,7 @@ class StreamsTest {
     void shouldReduceToMaxValueFromCollection() {
         final List<Integer> numbers = List.of(1, 6, 3, 2);
 
-        Optional<Integer> max = numbers.stream()
+        final Optional<Integer> max = numbers.stream()
                 .max(Integer::compareTo);
 
         assertThat(max).isNotEmpty();
@@ -115,7 +121,7 @@ class StreamsTest {
     void shouldReduceToMinValueFromCollection() {
         final List<Integer> numbers = List.of(1, 6, 3, 2);
 
-        Optional<Integer> min = numbers.stream()
+        final Optional<Integer> min = numbers.stream()
                 .min(Integer::compareTo);
 
         assertThat(min).isNotEmpty();
@@ -124,13 +130,17 @@ class StreamsTest {
 
     @Test
     void shouldCustomReduceValuesFromCollection() {
-        final List<String> names = List.of("Barcelona", "Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = List.of("aaa", "aa", "a");
 
-        Optional<String> result = names.stream()
-                .reduce((word1, word2)
-                        -> word1.length() > word2.length()
-                        ? word1 : word2);
+        final Optional<String> result = names.stream()
+                .reduce(getShortestString());
 
-        assertThat(result).contains("Tarragona");
+        assertThat(result).contains("a");
+    }
+
+    private BinaryOperator<String> getShortestString() {
+        return (word1, word2)
+                -> word1.length() <= word2.length()
+                ? word1 : word2;
     }
 }
