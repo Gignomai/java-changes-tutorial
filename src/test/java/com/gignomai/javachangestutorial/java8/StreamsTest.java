@@ -3,6 +3,7 @@ package com.gignomai.javachangestutorial.java8;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
@@ -25,7 +26,7 @@ class StreamsTest {
 
     @Test
     void shouldCreateCollectionFromStream() {
-        final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
 
         final List<String> result = names.stream()
                 .filter(name -> name.endsWith("ona"))
@@ -37,7 +38,7 @@ class StreamsTest {
 
     @Test
     void shouldFilterValuesFromCollection() {
-        final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
 
         final List<String> result = names.stream()
                 .filter(name -> name.startsWith("Bar"))
@@ -48,7 +49,7 @@ class StreamsTest {
 
     @Test
     void shouldMapValuesFromCollection() {
-        final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
 
         final List<String> result = names.stream()
                 .map(String::toUpperCase)
@@ -60,7 +61,7 @@ class StreamsTest {
 
     @Test
     void shouldFlatMapValuesFromCollection() {
-        final List<List<String>> names = List.of(List.of("Barcelona", "Girona", "LLeida", "Tarragona"));
+        final List<List<String>> names = Arrays.asList(Arrays.asList("Barcelona", "Girona"),Arrays.asList("LLeida", "Tarragona"));
 
         final List<String> result = names.stream()
                 .flatMap(List::stream)
@@ -73,7 +74,7 @@ class StreamsTest {
 
     @Test
     void shouldConsumeValuesFromCollection() {
-        final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
 
         final List<String> result = new ArrayList<>();
 
@@ -86,7 +87,7 @@ class StreamsTest {
 
     @Test
     void shouldReturnDistinctValuesFromCollection() {
-        final List<String> names = List.of("Barcelona", "Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = Arrays.asList("Barcelona", "Barcelona", "Girona", "LLeida", "Tarragona");
 
         final List<String> result = names.stream()
                 .distinct()
@@ -97,7 +98,7 @@ class StreamsTest {
 
     @Test
     void shouldCountValuesFromCollection() {
-        final List<String> names = List.of("Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
 
         final long count = names.stream()
                 .filter(name -> name.endsWith("ona"))
@@ -108,7 +109,7 @@ class StreamsTest {
 
     @Test
     void shouldReduceToMaxValueFromCollection() {
-        final List<Integer> numbers = List.of(1, 6, 3, 2);
+        final List<Integer> numbers = Arrays.asList(1, 6, 3, 2);
 
         final Optional<Integer> max = numbers.stream()
                 .max(Integer::compareTo);
@@ -119,7 +120,7 @@ class StreamsTest {
 
     @Test
     void shouldReduceToMinValueFromCollection() {
-        final List<Integer> numbers = List.of(1, 6, 3, 2);
+        final List<Integer> numbers = Arrays.asList(1, 6, 3, 2);
 
         final Optional<Integer> min = numbers.stream()
                 .min(Integer::compareTo);
@@ -130,7 +131,7 @@ class StreamsTest {
 
     @Test
     void shouldCustomReduceValuesFromCollection() {
-        final List<String> names = List.of("aaa", "aa", "a");
+        final List<String> names = Arrays.asList("aaa", "aa", "a");
 
         final Optional<String> result = names.stream()
                 .reduce(getShortestString());

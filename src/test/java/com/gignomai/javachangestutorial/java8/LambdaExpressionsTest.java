@@ -3,6 +3,7 @@ package com.gignomai.javachangestutorial.java8;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,8 +13,8 @@ class LambdaExpressionsTest {
 
     @Test
     void shouldApplyLambdaCode() {
-        final List<String> names = List.of("Barcelona","Girona","LLeida","Tarragona");
-        List<String> result = new ArrayList<>();
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
+        final List<String> result = new ArrayList<>();
 
         names.forEach(name -> result.add(name.toUpperCase()));
 
@@ -23,7 +24,7 @@ class LambdaExpressionsTest {
 
     @Test
     void shouldUseMethodReferenceAsLambda() {
-        final List<String> names = List.of("Barcelona","Girona","LLeida","Tarragona");
+        final List<String> names = Arrays.asList("Barcelona","Girona","LLeida","Tarragona");
 
         final List<String> result = names.stream()
                 .map(String::toUpperCase)

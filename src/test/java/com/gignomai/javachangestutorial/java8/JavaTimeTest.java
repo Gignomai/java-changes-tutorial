@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalField;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,7 +81,7 @@ class JavaTimeTest {
     @Test
     void shouldCreateALocalDateTime() {
         LocalDateTime first = LocalDateTime.now();
-        sleep(1000);
+        sleep();
         LocalDateTime second = LocalDateTime.now();
 
         assertThat(first).isBefore(second);
@@ -91,9 +90,10 @@ class JavaTimeTest {
         assertThat(first.getSecond()).isNotEqualTo(second.getSecond());
     }
 
-    private void sleep(int pause) {
+    private void sleep() {
         try {
-            Thread.sleep(pause);
+            double pauseLength = (1000 + (Math.random() * 10000));
+            Thread.sleep((int) pauseLength);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
