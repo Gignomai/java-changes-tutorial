@@ -4,9 +4,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Scanner;
 import java.util.function.BinaryOperator;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,13 +21,53 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StreamsTest {
 
     @Test
-    void shouldCreateStreamsFromCollection() {
+    void shouldCreateStreamFromCollection() {
         final String test = "Test";
 
         final Stream<String> stream = Stream.of(test);
 
         assertThat(stream).isNotNull();
         assertThat(stream).contains(test);
+    }
+
+    // Method stream() from Optional is available since Java 9
+    @Test
+    void shouldCreateStreamFromOptional() {
+        final Optional<String> test = Optional.of("Test");
+
+        final Stream<String> stream = test.stream();
+
+        assertThat(stream).isNotNull();
+        assertThat(stream).contains("Test");
+    }
+
+    // Method results() from Matcher is only available since Java 9
+    @Test
+    void shouldCreateStreamFromMatcher() {
+        final String test = "This is the test string";
+        final Pattern pattern = Pattern.compile("test");
+        final Matcher matcher = pattern.matcher(test);
+
+        final OptionalInt start = matcher.results()
+                .mapToInt(MatchResult::start)
+                .findFirst();
+
+        assertThat(start).isNotEmpty();
+        assertThat(start.getAsInt()).isEqualTo(12);
+    }
+
+    // Method results() from Matcher is only available since Java 9
+    @Test
+    void shouldCreateStreamFromScanner() {
+        final String test = "This is the test string";
+        final Scanner scanner = new Scanner(test);
+
+        final OptionalInt start = scanner.findAll("test")
+                .mapToInt(MatchResult::start)
+                .findFirst();
+
+        assertThat(start).isNotEmpty();
+        assertThat(start.getAsInt()).isEqualTo(12);
     }
 
     @Test
@@ -61,7 +107,7 @@ class StreamsTest {
 
     @Test
     void shouldFlatMapValuesFromCollection() {
-        final List<List<String>> names = Arrays.asList(Arrays.asList("Barcelona", "Girona"),Arrays.asList("LLeida", "Tarragona"));
+        final List<List<String>> names = Arrays.asList(Arrays.asList("Barcelona", "Girona"), Arrays.asList("LLeida", "Tarragona"));
 
         final List<String> result = names.stream()
                 .flatMap(List::stream)
@@ -72,6 +118,31 @@ class StreamsTest {
         assertThat(result).doesNotContain("Barcelona", "Girona", "LLeida", "Tarragona");
     }
 
+    @Test
+    void shouldMapToInt() {
+        final List<List<String>> names = Arrays.asList(Arrays.asList("Barcelona", "Girona"), Arrays.asList("LLeida", "Tarragona"));
+
+        final int result = names.stream()
+                .mapToInt(List::size)
+                .sum();
+
+        assertThat(result).isEqualTo(4);
+    }
+
+    @Test
+    void shouldLogSomethingWithPeek() {
+        final List<List<String>> names = Arrays.asList(Arrays.asList("Barcelona", "Girona"), Arrays.asList("LLeida", "Tarragona"));
+
+        final int result = names.stream()
+                .peek(list -> System.out.println(list.size()))
+                .mapToInt(List::size)
+                .sum();
+
+        assertThat(result).isEqualTo(4);
+
+    }
+
+    // This piece of code uses foreach in a not a very functional way because the state modification.
     @Test
     void shouldConsumeValuesFromCollection() {
         final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
@@ -127,6 +198,28 @@ class StreamsTest {
 
         assertThat(min).isNotEmpty();
         assertThat(min.get()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldReduceToMaxStringLengthUsingComparator() {
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
+
+        final Optional<String> max = names.stream()
+                .max(Comparator.comparingInt(String::length));
+
+        assertThat(max).isNotEmpty();
+        assertThat(max.get()).isEqualTo("Barcelona");
+    }
+
+    @Test
+    void shouldReduceToMinStringLengthUsingComparator() {
+        final List<String> names = Arrays.asList("Barcelona", "Girona", "LLeida", "Tarragona");
+
+        final Optional<String> max = names.stream()
+                .min(Comparator.comparingInt(String::length));
+
+        assertThat(max).isNotEmpty();
+        assertThat(max.get()).isEqualTo("Girona");
     }
 
     @Test
